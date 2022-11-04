@@ -5,7 +5,7 @@
 
 	##################
 	##### BUTTONS ####
-        ##################
+    ##################
 
 	# Quit button
         Button:
@@ -34,6 +34,7 @@
         # Turn on/off gate
         DPEAButton:
             id: armControl
+            control: False
             color: 0.180, 0.188, 0.980, 1
             text: "Lower Arm"
             center_x: root.width * 0.35
@@ -49,6 +50,7 @@
             id: magnetControl
             color: 0.180, 0.188, 0.980, 1
             text: "Hold Ball"
+            magnetOn: False
             center_x: root.width * 0.65
             y: root.height * 0.35
             background_color: 0, 0, 0, 0
@@ -60,7 +62,7 @@
 
 	##################
 	##### SLIDERS ####
-        ##################
+    ##################
 
         Slider:
             id: moveArm
@@ -72,11 +74,11 @@
             center_x: root.width * 0.6
             y: root.height * 0.15
             size_hint_x: 7
-            on_value: root.setArmPosition(self.value)
+            on_value: root.setArmPosition(self.value_normalized)
 
-        ##################
+    ##################
 	##### LABELS #####
-        ##################
+    ##################
 
         Label:
             id: title

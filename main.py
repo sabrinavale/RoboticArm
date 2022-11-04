@@ -71,16 +71,16 @@ cyprus.open_spi()
 # ////////////////////////////////////////////////////////////////
 # //                    SLUSH/HARDWARE SETUP                    //
 # ////////////////////////////////////////////////////////////////
-
+cyprus.initialize()
 sm = ScreenManager()
 arm = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
              steps_per_unit=200, speed=1)
 
 # ////////////////////////////////////////////////////////////////
 # //                       MAIN FUNCTIONS                       //
-# //             SHOULD INTERACT DIRECTLY WITH HARDWARE         //
+# //          SHOULD INTERACT DIRECTLY WITH HARDWARE            //
 # ////////////////////////////////////////////////////////////////
-	
+
 class MainScreen(Screen):
     version = cyprus.read_firmware_version()
     armPosition = 0
@@ -99,20 +99,34 @@ class MainScreen(Screen):
         return processInput
 
     def toggleArm(self):
+        if self.ids.armControl.control == False:
+            cyprus.set_pwm_values(2, period_value=100000, compare_value=100000, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+            self.ids.armControl.control = True
+        elif self.ids.armControl.control == True:
+            cyprus.set_pwm_values(2, period_value=100000, compare_value=0, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+            self.ids.armControl.control = False
         print("Process arm movement here")
 
     def toggleMagnet(self):
-        print("Process magnet here")
+        if self.ids.magnetControl.magnetOn == False:
+            cyprus.set_servo_position(1, 1)
+            self.ids.magnetControl.magnetOn = True
+            print("Magnet On")
+        elif self.ids.magnetControl.magnetOn == True:
+            cyprus.set_servo_position(1, 0.5)
+            self.ids.magnetControl.magnetOn = False
+            print("Magnet Off")
         
     def auto(self):
         print("Run the arm automatically here")
 
     def setArmPosition(self, position):
         print("Move arm here")
+        arm.go_to_position(position)
 
     def homeArm(self):
         arm.home(self.homeDirection)
-        
+
     def isBallOnTallTower(self):
         print("Determine if ball is on the top tower")
 
@@ -120,6 +134,8 @@ class MainScreen(Screen):
         print("Determine if ball is on the bottom tower")
         
     def initialize(self):
+        arm.relative_move(3)
+        arm.set_as_home()
         print("Home arm and turn off magnet")
 
     def resetColors(self):
