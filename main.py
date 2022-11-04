@@ -128,10 +128,16 @@ class MainScreen(Screen):
         arm.home(self.homeDirection)
 
     def isBallOnTallTower(self):
-        print("Determine if ball is on the top tower")
+        if cyprus.read_gpio() & 0b0010:
+            print("Ball is on short tower")
+        else:
+            print("Ball is on short tower")
 
     def isBallOnShortTower(self):
-        print("Determine if ball is on the bottom tower")
+        if cyprus.read_gpio() & 0b0001:
+            print("Ball is on tall tower")
+        else:
+            print("Ball is not on tall tower")
         
     def initialize(self):
         arm.relative_move(3)
